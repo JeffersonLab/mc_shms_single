@@ -64,11 +64,14 @@ C Local declarations.
 	parameter(th_nsig_max=3.0d0)            !max #/sigma for gaussian ran #s
 
 C Event limits, topdrawer limits, physics quantities
-	real*8 gen_lim(6)			!M.C. phase space limits.
+	real*8 gen_lim(8)			!M.C. phase space limits.
 	real*8 gen_lim_up(3)
 	real*8 gen_lim_down(3)
 
 	real*8 cut_dpp,cut_dth,cut_dph,cut_z	!cuts on reconstructed quantities
+	real*8 xoff,yoff,zoff                   !Beam offsets
+        real*8 spec_xoff,spec_yoff,spec_zoff    !Spectrometer offsets
+	real*8 spec_xpoff, spec_ypoff           !Spectrometer angle offsets
 	real*8 th_ev,cos_ev,sin_ev		!cos and sin of event angle
 
 	real*8 cos_ts,sin_ts			!cos and sin of spectrometer angle
@@ -86,6 +89,7 @@ C Initial and reconstructed track quantities.
 	real*8 dpp_init,dth_init,dph_init,xtar_init,ytar_init,ztar_init
 	real*8 dpp_recon,dth_recon,dph_recon,ztar_recon,ytar_recon
 	real*8 x_fp,y_fp,dx_fp,dy_fp		!at focal plane
+	real*8 fry,fr1,fr2
 	real*8 p_spec,th_spec			!spectrometer setting
 	real*8 resmult
 
@@ -281,6 +285,14 @@ C Strip off header
 	  if (.not.iss) stop 'ERROR (M.C. limits) in setup!'
 	enddo
 
+! Raster size
+	do i=7,8
+	   read (chanin,1001) str_line
+	   write(*,*),str_line(1:last_char(str_line))
+	   iss = rd_real(str_line,gen_lim(i))
+	   if (.not.iss) stop 'ERROR (Fast Raster) in setup'
+	enddo
+
 ! Cuts on reconstructed quantities
 	read (chanin,1001) str_line
 	write(*,*),str_line(1:last_char(str_line))
@@ -307,6 +319,32 @@ C Strip off header
 	write(*,*),str_line(1:last_char(str_line))
 	if (.not.rd_real(str_line,rad_len_cm)) 
      > stop 'ERROR (RAD_LEN_CM) in setup!'
+
+! Beam and target offsets
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,xoff)
+	if(.not.iss) stop 'ERROR (xoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,yoff)
+	if(.not.iss) stop 'ERROR (yoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,zoff)
+	if(.not.iss) stop 'ERROR (zoff) in setup!'
+! Spectrometer offsets
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,spec_xoff)
+	if(.not.iss) stop 'ERROR (spect. xoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,spec_yoff)
+	if(.not.iss) stop 'ERROR (spect. yoff) in setup!'
 
 ! read in flag for particle type.
 	read (chanin,1001) str_line
@@ -374,7 +412,7 @@ C------------------------------------------------------------------------------C
 ! function does not type cast string to integer otherwise.
           itime=time8()
    	  call ctime(itime,timestring)
-	  call srand(itime)
+c	  call srand(itime)
 
 	do Itrial = 1,n_trials
 	  if(mod(Itrial,5000).eq.0) write(*,*)'event #: ',
@@ -390,17 +428,29 @@ C Units are cm.
 ! TH - use a double precision for random number generation here.
 	  x = gauss1(th_nsig_max) * gen_lim(4) / 6.0	!beam width
 	  y = gauss1(th_nsig_max) * gen_lim(5) / 6.0	!beam height
-	  z = (rand() - 0.5) * gen_lim(6)		!along target
+	  z = (grnd() - 0.5) * gen_lim(6)		!along target
 
+C DJG Assume flat raster
+	  fr1 = (grnd() - 0.5) * gen_lim(7)   !raster x
+	  fr2 = (grnd() - 0.5) * gen_lim(8)   !raster y
+
+	  fry = -fr2  !+y = up, but fry needs to be positive when pointing down
+
+	  x = x + fr1
+	  y = y + fr2
+
+	  x = x + xoff
+	  y = y + yoff
+	  z = z + zoff
 
 C Pick scattering angles and DPP from independent, uniform distributions.
 C dxdz and dydz in HMS TRANSPORT coordinates.
 
-	  dpp  = rand()*(gen_lim_up(1)-gen_lim_down(1))
+	  dpp  = grnd()*(gen_lim_up(1)-gen_lim_down(1))
      &             + gen_lim_down(1)
-	  dydz = rand()*(gen_lim_up(2)-gen_lim_down(2))
+	  dydz = grnd()*(gen_lim_up(2)-gen_lim_down(2))
      &          /1000.   + gen_lim_down(2)/1000.
-	  dxdz = rand()*(gen_lim_up(3)-gen_lim_down(3))
+	  dxdz = grnd()*(gen_lim_up(3)-gen_lim_down(3))
      &          /1000.   + gen_lim_down(3)/1000.
 
 
@@ -416,9 +466,22 @@ C line (looking downstream).
 !	  ys    = x * cos_ts + z * sin_ts
 !	  zs    = z * cos_ts - x * sin_ts
 
+C DJG Apply spectrometer offsets
+C DJG If the spectrometer if too low (positive x offset) a particle
+C DJG at "x=0" will appear in the spectrometer to be a little high
+C DJG so we should subtract the offset
+
+	  xs = xs - spec_xoff
+	  ys = ys - spec_yoff
+	  zs = zs - spec_zoff
+
 	  dpp_s  = dpp
 	  dxdz_s = dxdz
 	  dydz_s = dydz
+
+C DJG Apply spectrometer angle offsets
+	  dxdz_s = dxdz_s - spec_xpoff/1000.0
+	  dydz_s = dydz_s - spec_ypoff/1000.0
 
 C Drift back to zs = 0, the plane through the target center
 	  x_s = x_s - z_s * dxdz_s
