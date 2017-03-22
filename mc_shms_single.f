@@ -335,9 +335,10 @@ C Strip off header
 	write(*,*),str_line(1:last_char(str_line))
 	iss = rd_real(str_line,zoff)
 	if(.not.iss) stop 'ERROR (zoff) in setup!'
+
 ! Spectrometer offsets
 	read (chanin, 1001) str_line
-	write(*,*),str_line(1:last_char(str_line))
+	write(8,*),str_line(1:last_char(str_line))
 	iss = rd_real(str_line,spec_xoff)
 	if(.not.iss) stop 'ERROR (spect. xoff) in setup!'
 
@@ -345,6 +346,21 @@ C Strip off header
 	write(*,*),str_line(1:last_char(str_line))
 	iss = rd_real(str_line,spec_yoff)
 	if(.not.iss) stop 'ERROR (spect. yoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,spec_zoff)
+	if(.not.iss) stop 'ERROR (spect. zoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,spec_xpoff)
+	if(.not.iss) stop 'ERROR (spect. xpoff) in setup!'
+
+	read (chanin, 1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	iss = rd_real(str_line,spec_ypoff)
+	if(.not.iss) stop 'ERROR (spect. ypoff) in setup!'
 
 ! read in flag for particle type.
 	read (chanin,1001) str_line
