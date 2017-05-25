@@ -10,7 +10,7 @@ C----------------------------------------------------------------------
 	implicit 	none
 
 	include 'struct_shms.inc'
-	include '../spectrometers.inc'
+	include '../src/spectrometers.inc'
 	include 'hut.inc'
 
 C Math constants
