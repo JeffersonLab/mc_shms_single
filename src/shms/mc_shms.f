@@ -249,7 +249,7 @@ C Read in transport coefficients.  Choose tune-dependent parameters.
 	    write(6,*) 'LSA tune no longer in use!'
 	    stop
 	  endif
-	  write(23,*) ' init forward matrix'
+	  write(6,*) ' init forward matrix'
 	  call transp_init(spectr,n_classes)
 	  close (unit=chan)
 	  if (n_classes.ne.32) stop 
