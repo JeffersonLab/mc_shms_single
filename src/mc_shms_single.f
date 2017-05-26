@@ -8,7 +8,7 @@ C-______________________________________________________________________________
 
 	implicit none
 
-	include '../shms/struct_shms.inc'
+	include 'shms/struct_shms.inc'
 	include 'spectrometers.inc'
 	include 'constants.inc'
 

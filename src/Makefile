@@ -20,9 +20,9 @@ RM        = rm -f
 SHELL     = /bin/sh
 
 #SPEC      = ./hms_simc/
-SPEC      = ../shms/
+SPEC      = shms/
 
-SHARE	  = ../shared/
+SHARE	  = shared/
 
 my_objs = $(SPEC)mc_shms.o $(SPEC)mc_shms_hut.o $(SPEC)mc_shms_recon.o \
 	  $(SHARE)project.o $(SHARE)transp.o $(SHARE)rotate_haxis.o \

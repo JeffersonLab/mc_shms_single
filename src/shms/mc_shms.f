@@ -31,10 +31,10 @@ C-______________________________________________________________________________
 
 	implicit 	none
 
-	include '../shms/struct_shms.inc'
-	include '../shms/apertures_shms.inc'
-	include '../src/constants.inc'
-	include '../src/spectrometers.inc'
+	include 'struct_shms.inc'
+	include 'apertures_shms.inc'
+	include '../constants.inc'
+	include '../spectrometers.inc'
 
 
 C Spectrometer definitions - for double arm monte carlo compatability

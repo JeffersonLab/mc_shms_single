@@ -14,8 +14,8 @@ C-______________________________________________________________________________
 
 	implicit none
 
-	include '../src/spectrometers.inc'
-	include '../src/simulate.inc'
+	include '../spectrometers.inc'
+	include '../simulate.inc'
 
 	real*8 x_new,y_new,z_drift,tmpdrift
 	logical decay_flag		!check for decay
