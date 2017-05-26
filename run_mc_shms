@@ -1,4 +1,4 @@
 #!/bin//tcsh 
-src/mc_shms_single << endofinput >! runout/$1.out
+src/mc_shms_single << endofinput >! runout/$1.txt
 $1
 endofinput
