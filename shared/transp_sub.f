@@ -43,8 +43,8 @@ C-______________________________________________________________________________
 
 	implicit 	none
 
-	include '../spectrometers.inc'
-	include '../simulate.inc'
+	include '../src/spectrometers.inc'
+	include '../src/simulate.inc'
 
 C Arguments.
 
