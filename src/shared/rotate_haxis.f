@@ -25,7 +25,7 @@ C-______________________________________________________________________________
 
 	implicit none
 
-        include '../src/spectrometers.inc'
+        include '../spectrometers.inc'
 
 	real*8 rotang,xp0,yp0,xi
 	real*8 alpha,beta,alpha_p,beta_p,sin_th,cos_th,tan_th

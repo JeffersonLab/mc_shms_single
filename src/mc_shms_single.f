@@ -8,7 +8,7 @@ C-______________________________________________________________________________
 
 	implicit none
 
-	include '../shms/struct_shms.inc'
+	include 'shms/struct_shms.inc'
 	include 'spectrometers.inc'
 	include 'constants.inc'
 
@@ -201,14 +201,14 @@ C Open setup file.
 	write(*,*)'Enter input filename (assumed to be in infiles dir)'
 	read(*,1968) rawname
  1968	format(a)
-	filename = 'infiles/'//rawname(1:last_char(rawname))//'.inp'
+	filename = '../infiles/'//rawname(1:last_char(rawname))//'.inp'
 	print *,filename,'opened'
 	open(unit=chanin,status='old',file=filename)
 
 C Initialize HBOOK/NTUPLE if used.
 	if (hut_ntuple) then
 	  call hlimit(pawc_size)
-	  filename = 'worksim/'//rawname(1:last_char(rawname))//'.rzdat'
+	  filename = '../worksim/'//rawname(1:last_char(rawname))//'.rzdat'
 
 cmkj          iquest(10) = 256000
 cmkj	  iquest(10) = 510000
@@ -232,7 +232,7 @@ cmkj	  call hropen(30,'HUT',filename,'NQ',4096,i) !CERNLIB
 	endif	   
 
 C Open Output file.
-	filename = 'outfiles/'//rawname(1:last_char(rawname))//'.out'
+	filename = '../outfiles/'//rawname(1:last_char(rawname))//'.out'
 	open (unit=chanout,status='unknown',file=filename)
 
 C Read in real*8's from setup file
@@ -338,7 +338,7 @@ C Strip off header
 
 ! Spectrometer offsets
 	read (chanin, 1001) str_line
-	write(8,*),str_line(1:last_char(str_line))
+	write(*,*),str_line(1:last_char(str_line))
 	iss = rd_real(str_line,spec_xoff)
 	if(.not.iss) stop 'ERROR (spect. xoff) in setup!'
 

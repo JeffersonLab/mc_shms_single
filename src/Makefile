@@ -20,9 +20,9 @@ RM        = rm -f
 SHELL     = /bin/sh
 
 #SPEC      = ./hms_simc/
-SPEC      = ../shms/
+SPEC      = shms/
 
-SHARE	  = ../shared/
+SHARE	  = shared/
 
 my_objs = $(SPEC)mc_shms.o $(SPEC)mc_shms_hut.o $(SPEC)mc_shms_recon.o \
 	  $(SHARE)project.o $(SHARE)transp.o $(SHARE)rotate_haxis.o \
@@ -113,7 +113,7 @@ ifeq ($(MYOS),Linux)
   FFLAGSA=-O -W -ffixed-line-length-132 -ff2c -fno-automatic -fdefault-real-8
 #  FFLAGSA=-O -V -W -f -s -N1 -B108 -B100 -N90 -N22 -N2 -N113
 #  INCLUDES=-I.,..,./sos,$(SPEC),./hrsr,./hrsl,./shms,$(Csoft)/SRC/INCLUDE
-  INCLUDES=-I.,..,./sos,$(SPEC),./hrsr,./hrsl,./shms,$(Csoft)/INCLUDE
+  INCLUDES=-I.,..,./sos,./$(SPEC),./hrsr,./hrsl,./shms,$(Csoft)/INCLUDE
   FFLAGS= $(INCLUDES) $(FFLAGSA)
   FFLAG1=$(FFLAGS) -c
   OTHERLIBS =  -L$(CERN_ROOT)/lib $(CERNLIBS) -L/usr/lib

@@ -31,10 +31,10 @@ C-______________________________________________________________________________
 
 	implicit 	none
 
-	include '../shms/struct_shms.inc'
-	include '../shms/apertures_shms.inc'
-	include '../src/constants.inc'
-	include '../src/spectrometers.inc'
+	include 'struct_shms.inc'
+	include 'apertures_shms.inc'
+	include '../constants.inc'
+	include '../spectrometers.inc'
 
 
 C Spectrometer definitions - for double arm monte carlo compatability
@@ -249,7 +249,7 @@ C Read in transport coefficients.  Choose tune-dependent parameters.
 	    write(6,*) 'LSA tune no longer in use!'
 	    stop
 	  endif
-	  write(23,*) ' init forward matrix'
+	  write(6,*) ' init forward matrix'
 	  call transp_init(spectr,n_classes)
 	  close (unit=chan)
 	  if (n_classes.ne.32) stop 

@@ -19,7 +19,7 @@ C-______________________________________________________________________________
 
 	implicit none
 
-	include '../src/spectrometers.inc'
+	include '../spectrometers.inc'
 
 C Spectrometer definitions - for double arm monte carlo compatability
 	integer*4 spectr
