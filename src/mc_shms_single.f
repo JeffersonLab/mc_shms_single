@@ -17,13 +17,13 @@ C HBOOK/NTUPLE common block and parameters.
 	parameter	(pawc_size = 1000000)
 	common		/pawc/ hbdata(pawc_size)
 	integer*4	hbdata
-	character*8	hut_nt_names(20)/
+	character*8	hut_nt_names(21)/
      >			'hsxfp', 'hsyfp', 'hsxpfp', 'hsypfp',
      >			'hsztari','hsytari', 'hsdeltai', 'hsyptari', 'hsxptari',
      >			'hsztar','hsytar', 'hsdelta', 'hsyptar', 'hsxptar', 
      >                  'hsxtari','yrast','xsnum','ysnum','xsieve'
-     >                  ,'ysieve'/
-	real*4		hut(20)
+     >                  ,'ysieve','stop_id'/
+	real*4		hut(21)
 
 	character*8	spec_nt_names(58)/
      >			's_hb1_x', 's_hb1_y','s_hb2_x', 's_hb2_y','s_hb3_x', 's_hb3_y','s_hb4_x', 's_hb4_y', 's_q1_x', 's_q1_y', ! 10
@@ -100,6 +100,7 @@ C Control flags (from input file)
 	logical*4 wcs_flag
 	logical*4 cer_flag
 	logical*4 vac_flag
+        logical*4 store_all
 
 	common /hutflag/ cer_flag,vac_flag
 C Hardwired control flags.
@@ -225,7 +226,7 @@ cmkj	  call hropen(30,'HUT',filename,'NQ',4096,i) !CERNLIB
 	    stop
 	  endif
 
-	  call hbookn(1411,'HUT NTUPLE',20,'HUT',10000,hut_nt_names)
+	  call hbookn(1411,'HUT NTUPLE',21,'HUT',10000,hut_nt_names)
           if (spec_ntuple) then
            call hbookn(1412,'SPEC NTU',58,'HUT',10000,spec_nt_names)
           endif
@@ -402,6 +403,13 @@ C Strip off header
 	if (.not.rd_int(str_line,tmp_int)) 
      > stop 'ERROR: vac_flag in setup file!'
 	if (tmp_int.eq.1) vac_flag = .true.
+
+! Read in flag for vacuum pipe or helium bag 
+	read (chanin,1001) str_line
+	write(*,*),str_line(1:last_char(str_line))
+	if (.not.rd_int(str_line,tmp_int)) 
+     > stop 'ERROR: vac_flag in setup file!'
+	if (tmp_int.eq.1) store_all = .true.
 
 
 C Set particle masses.
@@ -597,46 +605,14 @@ c            if (ok_spec) spec(58) =1.
             call hfn(1412,spec)
           endif
 
+
+
 	  if (ok_spec) then !Success, increment arrays
 	    dpp_recon = dpp_s
             dth_recon = dydz_s*1000.			!mr
 	    dph_recon = dxdz_s*1000.			!mr
 	    ztar_recon = + y_s / sin_ts 
             ytar_recon = y_s
-
-
-C Output NTUPLE entry.
-
-	    if (hut_ntuple) then
-	      hut(1) = x_fp
-	      hut(2) = y_fp
-	      hut(3) = dx_fp
-	      hut(4) = dy_fp
-	      hut(5) = ztar_init
-	      hut(6) = ytar_init
-	      hut(7) = dpp_init
-	      hut(8) = dth_init/1000.
-	      hut(9) = dph_init/1000.
-	      hut(10) = ztar_recon
-	      hut(11) = ytar_recon
-	      hut(12)= dpp_recon
-	      hut(13)= dth_recon/1000.
-	      hut(14)= dph_recon/1000.
-	      hut(15)= xtar_init
-	      hut(16)= y
-	      hut(17)= xs_num
-	      hut(18)= ys_num
-	      hut(19)= xc_sieve
-	      hut(20)= yc_sieve
-              if (use_front_sieve) then
-	      hut(17)= xsfr_num
-	      hut(18)= ysfr_num
-	      hut(19)= xc_frsieve
-	      hut(20)= yc_frsieve
-              endif
-	      call hfn(1411,hut)
-	    endif
-
 
 C Compute sums for calculating reconstruction variances.
 	    dpp_var(1) = dpp_var(1) + (dpp_recon - dpp_init)
@@ -649,6 +625,40 @@ C Compute sums for calculating reconstruction variances.
 	    dph_var(2) = dph_var(2) + (dph_recon - dph_init)**2
 	    ztg_var(2) = ztg_var(2) + (ztar_recon - ztar_init)**2
 	  endif			!Incremented the arrays
+
+
+C Output NTUPLE entry.
+
+	  if (store_all.OR.hut_ntuple) then
+	    hut(1) = x_fp
+	    hut(2) = y_fp
+	    hut(3) = dx_fp
+	    hut(4) = dy_fp
+	    hut(5) = ztar_init
+	    hut(6) = ytar_init
+	    hut(7) = dpp_init
+	    hut(8) = dth_init/1000.
+	    hut(9) = dph_init/1000.
+	    hut(10) = ztar_recon
+	    hut(11) = ytar_recon
+	    hut(12)= dpp_recon
+	    hut(13)= dth_recon/1000.
+	    hut(14)= dph_recon/1000.
+	    hut(15)= xtar_init
+            hut(16)= y
+	    hut(17)= xs_num
+	    hut(18)= ys_num
+	    hut(19)= xc_sieve
+	    hut(20)= yc_sieve
+            if (use_front_sieve) then
+	      hut(17)= xsfr_num
+	      hut(18)= ysfr_num
+	      hut(19)= xc_frsieve
+	      hut(20)= yc_frsieve
+            endif
+            hut(21) = stop_id 
+	    call hfn(1411,hut)
+	  endif
 
 C We are done with this event, whether GOOD or BAD.
 C Loop for remainder of trials.
