@@ -629,7 +629,7 @@ C Compute sums for calculating reconstruction variances.
 
 C Output NTUPLE entry.
 
-	  if (store_all.OR.hut_ntuple) then
+	  if (store_all.OR.(hut_ntuple.AND.ok_spec)) then
 	    hut(1) = x_fp
 	    hut(2) = y_fp
 	    hut(3) = dx_fp
