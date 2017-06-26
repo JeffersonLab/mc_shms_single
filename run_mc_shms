@@ -1,4 +1,4 @@
-#!/bin//bask
+#!/bin//bash
 cd src 
 ./mc_shms_single << endofinput > ../runout/$1.txt
 $1
