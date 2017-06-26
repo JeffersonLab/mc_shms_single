@@ -109,7 +109,7 @@ endif
 ##endif
 
 ifeq ($(MYOS),Linux)
-  CERN_ROOT = /u/site/cernlib/x86_64_rhel7/2005
+#  CERN_ROOT = /u/site/cernlib/x86_64_rhel7/2005
   CERNLIBS= -L $(CERN_ROOT)/lib -lmathlib -lpacklib
 #  CERN_ROOT = /apps/cernlib/i386_fc8/2005
   FFLAGSA=-O -W -w -ffixed-line-length-132 -ff2c -fno-automatic -fdefault-real-8
