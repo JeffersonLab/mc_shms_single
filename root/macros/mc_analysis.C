@@ -13,11 +13,15 @@ Float_t  xFocalMCRaw, xpFocalMCRaw, yFocalMCRaw, ypFocalMCRaw;
 Float_t  yTarMCRaw, xpTarMCRaw, ypTarMCRaw, deltaMCRaw;
 // Data variables
 // Input MC histos
-TH1F *h_xFocalMCRaw, *h_xpFocalMCRaw, *h_yFocalMCRaw, *h_ypFocalMCRaw;
-TH1F *h_yTarMCRaw, *h_xpTarMCRaw, *h_ypTarMCRaw, *h_deltaMCRaw;
-TH2F *h2_xVxpFocalMCRaw, *h2_xVyFocalMCRaw, *h2_xVypFocalMCRaw;
-TH2F *h2_xpVyFocalMCRaw, *h2_xpVypFocalMCRaw, *h2_yVypFocalMCRaw;
-TH2F *h2_yVxpTarMCRaw, *h2_yVypTarMCRaw, *h2_xpVypTarMCRaw;
+
+TH1F *h_deltaMCRaw;
+TH2F *h2_xVyFocalMCRaw;
+
+// TH1F *h_xFocalMCRaw, *h_xpFocalMCRaw, *h_yFocalMCRaw, *h_ypFocalMCRaw;
+// TH1F *h_yTarMCRaw, *h_xpTarMCRaw, *h_ypTarMCRaw, *h_deltaMCRaw;
+// TH2F *h2_xVxpFocalMCRaw, *h2_xVyFocalMCRaw, *h2_xVypFocalMCRaw;
+// TH2F *h2_xpVyFocalMCRaw, *h2_xpVypFocalMCRaw, *h2_yVypFocalMCRaw;
+// TH2F *h2_yVxpTarMCRaw, *h2_yVypTarMCRaw, *h2_xpVypTarMCRaw;
 // Declare constants
 static const Double_t protonMass    = 0.938272;  // GeV
 static const Double_t rad2mrad      = 1000.0;
@@ -39,12 +43,12 @@ void mc_analysis() {
   // Acquire leafs of interest
   // Input MC leafs
   mcRawTree->SetBranchAddress("hsxfp",   &xFocalMCRaw);
-  mcRawTree->SetBranchAddress("hsxpfp",  &xpFocalMCRaw);
+  // mcRawTree->SetBranchAddress("hsxpfp",  &xpFocalMCRaw);
   mcRawTree->SetBranchAddress("hsyfp",   &yFocalMCRaw);
-  mcRawTree->SetBranchAddress("hsypfp",  &ypFocalMCRaw);
-  mcRawTree->SetBranchAddress("hsytar",  &yTarMCRaw);
-  mcRawTree->SetBranchAddress("hsxptar", &xpTarMCRaw);
-  mcRawTree->SetBranchAddress("hsyptar", &ypTarMCRaw);
+  // mcRawTree->SetBranchAddress("hsypfp",  &ypFocalMCRaw);
+  // mcRawTree->SetBranchAddress("hsytar",  &yTarMCRaw);
+  // mcRawTree->SetBranchAddress("hsxptar", &xpTarMCRaw);
+  // mcRawTree->SetBranchAddress("hsyptar", &ypTarMCRaw);
   mcRawTree->SetBranchAddress("hsdelta", &deltaMCRaw);
     
   // Create input MC directory and descend into it
@@ -52,24 +56,24 @@ void mc_analysis() {
   if(!mcRawDir) {mcRawDir = mcOutFile->mkdir("mcRawDir"); mcRawDir->cd();}
   else mcOutFile->cd("mcRawDir");
   // Book input 1D MC histos
-  h_xFocalMCRaw  = new TH1F("h_xFocalMCRaw",  "Input Monte-Carlo: X_{fp}; X_{fp} (cm); Number of Entries / 5 mm",   160, -40, 40);
-  h_xpFocalMCRaw = new TH1F("h_xpFocalMCRaw", "Input Monte-Carlo: X'_{fp}; X'_{fp}; Number of Entries / 2 mrad",    60, -60.0, 60.0);
-  h_yFocalMCRaw  = new TH1F("h_yFocalMCRaw",  "Input Monte-Carlo: Y_{fp}; Y_{fp} (cm); Number of Entries / 5 mm",   160, -40, 40);
-  h_ypFocalMCRaw = new TH1F("h_ypFocalMCRaw", "Input Monte-Carlo: Y'_{fp}; Y'_{fp}; Number of Entries / 2 mrad",    60, -60.0, 60.0);
-  h_yTarMCRaw    = new TH1F("h_yTarMCRaw",    "Input Monte-Carlo: Y_{tar}; Y_{tar} (cm); Number of Entries / 1 mm", 100, -5, 5);
-  h_xpTarMCRaw   = new TH1F("h_xpTarMCRaw",   "Input Monte-Carlo: X'_{tar}; X'_{tar}; Number of Entries / 2 mrad",  60, -60.0, 60.0);
-  h_ypTarMCRaw   = new TH1F("h_ypTarMCRaw",   "Input Monte-Carlo: Y'_{tar}; Y'_{tar}; Number of Entries / 2 mrad",  60, -60.0, 60.0);
+  // h_xFocalMCRaw  = new TH1F("h_xFocalMCRaw",  "Input Monte-Carlo: X_{fp}; X_{fp} (cm); Number of Entries / 5 mm",   160, -40, 40);
+  // h_xpFocalMCRaw = new TH1F("h_xpFocalMCRaw", "Input Monte-Carlo: X'_{fp}; X'_{fp}; Number of Entries / 2 mrad",    60, -60.0, 60.0);
+  // h_yFocalMCRaw  = new TH1F("h_yFocalMCRaw",  "Input Monte-Carlo: Y_{fp}; Y_{fp} (cm); Number of Entries / 5 mm",   160, -40, 40);
+  // h_ypFocalMCRaw = new TH1F("h_ypFocalMCRaw", "Input Monte-Carlo: Y'_{fp}; Y'_{fp}; Number of Entries / 2 mrad",    60, -60.0, 60.0);
+  // h_yTarMCRaw    = new TH1F("h_yTarMCRaw",    "Input Monte-Carlo: Y_{tar}; Y_{tar} (cm); Number of Entries / 1 mm", 100, -5, 5);
+  // h_xpTarMCRaw   = new TH1F("h_xpTarMCRaw",   "Input Monte-Carlo: X'_{tar}; X'_{tar}; Number of Entries / 2 mrad",  60, -60.0, 60.0);
+  // h_ypTarMCRaw   = new TH1F("h_ypTarMCRaw",   "Input Monte-Carlo: Y'_{tar}; Y'_{tar}; Number of Entries / 2 mrad",  60, -60.0, 60.0);
   h_deltaMCRaw   = new TH1F("h_deltaMCRaw",   "Input Monte-Carlo: #delta; #delta; Number of Entries",             80, -40, 40);
   // Book input 2D MC histos
-  h2_xVxpFocalMCRaw  = new TH2F("h2_xVxpFocalMCRaw",  "Input Monte-Carlo: X_{fp} vs. X'_{fp}; X'_{fp} / 2 mrad; X_{fp} (cm) / 5 mm",    100, -100.0, 100.0, 160, -40, 40);
+  // h2_xVxpFocalMCRaw  = new TH2F("h2_xVxpFocalMCRaw",  "Input Monte-Carlo: X_{fp} vs. X'_{fp}; X'_{fp} / 2 mrad; X_{fp} (cm) / 5 mm",    100, -100.0, 100.0, 160, -40, 40);
   h2_xVyFocalMCRaw   = new TH2F("h2_xVyFocalMCRaw",   "Input Monte-Carlo: X_{fp} vs. Y_{fp}; Y_{fp} (cm) / 5 mm; X_{fp} (cm) / 5 mm",   160, -40, 40, 160, -40, 40);
-  h2_xVypFocalMCRaw  = new TH2F("h2_xVypFocalMCRaw",  "Input Monte-Carlo: X_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; X_{fp} (cm) / 5 mm",    60, -60.0, 60.0, 160, -40, 40);
-  h2_xpVyFocalMCRaw  = new TH2F("h2_xpVyFocalMCRaw",  "Input Monte-Carlo: X'_{fp} vs. Y_{fp}; Y_{fp} (cm) / 5 mm; X'_{fp} / 2 mrad",    160, -40, 40, 100, -100.0, 100.0);
-  h2_xpVypFocalMCRaw = new TH2F("h2_xpVypFocalMCRaw", "Input Monte-Carlo: X'_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; X'_{fp} / 2 mrad",     60, -60.0, 60.0, 100, -100.0, 100.0);
-  h2_yVypFocalMCRaw  = new TH2F("h2_yVypFocalMCRaw",  "Input Monte-Carlo: Y_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; Y_{fp} (cm) / 5 mm",    60, -60.0, 60.0, 160, -40, 40);
-  h2_yVxpTarMCRaw    = new TH2F("h2_yVxpTarMCRaw",    "Input Monte-Carlo: Y_{tar} vs. X'_{tar}; X'_{tar} / 2 mrad; Y_{tar} / 1 mm",     200, -100.0, 100.0, 100, -5, 5);
-  h2_yVypTarMCRaw    = new TH2F("h2_yVypTarMCRaw",    "Input Monte-Carlo: Y_{tar} vs. Y'_{tar}; Y'_{tar} / 2 mrad; Y_{tar} / 1 mm",     200, -100.0, 100.0, 100, -5, 5);
-  h2_xpVypTarMCRaw   = new TH2F("h2_xpVypTarMCRaw",   "Input Monte-Carlo: X'_{tar} vs. Y'_{tar}; Y'_{tar} / 2 mrad; X'_{tar} / 2 mrad", 60, -60.0, 60.0, 100, -100.0, 100.0);
+  // h2_xVypFocalMCRaw  = new TH2F("h2_xVypFocalMCRaw",  "Input Monte-Carlo: X_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; X_{fp} (cm) / 5 mm",    60, -60.0, 60.0, 160, -40, 40);
+  // h2_xpVyFocalMCRaw  = new TH2F("h2_xpVyFocalMCRaw",  "Input Monte-Carlo: X'_{fp} vs. Y_{fp}; Y_{fp} (cm) / 5 mm; X'_{fp} / 2 mrad",    160, -40, 40, 100, -100.0, 100.0);
+  // h2_xpVypFocalMCRaw = new TH2F("h2_xpVypFocalMCRaw", "Input Monte-Carlo: X'_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; X'_{fp} / 2 mrad",     60, -60.0, 60.0, 100, -100.0, 100.0);
+  // h2_yVypFocalMCRaw  = new TH2F("h2_yVypFocalMCRaw",  "Input Monte-Carlo: Y_{fp} vs. Y'_{fp}; Y'_{fp} / 2 mrad; Y_{fp} (cm) / 5 mm",    60, -60.0, 60.0, 160, -40, 40);
+  // h2_yVxpTarMCRaw    = new TH2F("h2_yVxpTarMCRaw",    "Input Monte-Carlo: Y_{tar} vs. X'_{tar}; X'_{tar} / 2 mrad; Y_{tar} / 1 mm",     200, -100.0, 100.0, 100, -5, 5);
+  // h2_yVypTarMCRaw    = new TH2F("h2_yVypTarMCRaw",    "Input Monte-Carlo: Y_{tar} vs. Y'_{tar}; Y'_{tar} / 2 mrad; Y_{tar} / 1 mm",     200, -100.0, 100.0, 100, -5, 5);
+  // h2_xpVypTarMCRaw   = new TH2F("h2_xpVypTarMCRaw",   "Input Monte-Carlo: X'_{tar} vs. Y'_{tar}; Y'_{tar} / 2 mrad; X'_{tar} / 2 mrad", 60, -60.0, 60.0, 100, -100.0, 100.0);
   mcOutFile->cd("../");
 
   UInt_t mcRawEventCntr = 0;
@@ -82,24 +86,24 @@ void mc_analysis() {
     mcRawEventCntr++;
     // Fill histos
     // 1D histos
-    h_xFocalMCRaw->Fill(xFocalMCRaw);
-    h_xpFocalMCRaw->Fill(xpFocalMCRaw*rad2mrad);
-    h_yFocalMCRaw->Fill(yFocalMCRaw);
-    h_ypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad);
-    h_yTarMCRaw->Fill(yTarMCRaw);
-    h_xpTarMCRaw->Fill(xpTarMCRaw*rad2mrad);
-    h_ypTarMCRaw->Fill(ypTarMCRaw*rad2mrad);
+    // h_xFocalMCRaw->Fill(xFocalMCRaw);
+    // h_xpFocalMCRaw->Fill(xpFocalMCRaw*rad2mrad);
+    // h_yFocalMCRaw->Fill(yFocalMCRaw);
+    // h_ypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad);
+    // h_yTarMCRaw->Fill(yTarMCRaw);
+    // h_xpTarMCRaw->Fill(xpTarMCRaw*rad2mrad);
+    // h_ypTarMCRaw->Fill(ypTarMCRaw*rad2mrad);
     h_deltaMCRaw->Fill(deltaMCRaw);
     // 2D histos
-    h2_xVxpFocalMCRaw->Fill(xpFocalMCRaw*rad2mrad, xFocalMCRaw);
+    // h2_xVxpFocalMCRaw->Fill(xpFocalMCRaw*rad2mrad, xFocalMCRaw);
     h2_xVyFocalMCRaw->Fill(yFocalMCRaw, xFocalMCRaw);
-    h2_xVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, xFocalMCRaw);
-    h2_xpVyFocalMCRaw->Fill(yFocalMCRaw, xpFocalMCRaw*rad2mrad);
-    h2_xpVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, xpFocalMCRaw*rad2mrad);
-    h2_yVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, yFocalMCRaw);
-    h2_yVxpTarMCRaw->Fill(xpTarMCRaw*rad2mrad, yTarMCRaw);
-    h2_yVypTarMCRaw->Fill(ypTarMCRaw*rad2mrad, yTarMCRaw);
-    h2_xpVypTarMCRaw->Fill(ypTarMCRaw*rad2mrad, xpTarMCRaw*rad2mrad);
+    // h2_xVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, xFocalMCRaw);
+    // h2_xpVyFocalMCRaw->Fill(yFocalMCRaw, xpFocalMCRaw*rad2mrad);
+    // h2_xpVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, xpFocalMCRaw*rad2mrad);
+    // h2_yVypFocalMCRaw->Fill(ypFocalMCRaw*rad2mrad, yFocalMCRaw);
+    // h2_yVxpTarMCRaw->Fill(xpTarMCRaw*rad2mrad, yTarMCRaw);
+    // h2_yVypTarMCRaw->Fill(ypTarMCRaw*rad2mrad, yTarMCRaw);
+    // h2_xpVypTarMCRaw->Fill(ypTarMCRaw*rad2mrad, xpTarMCRaw*rad2mrad);
   }  // Raw MC loop
 
   // Write comparison ROOT file
