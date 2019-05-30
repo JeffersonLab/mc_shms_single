@@ -1,0 +1,19 @@
+#!/bin//csh
+source ~/_cshrc
+
+if ( $#argv < 1 ) then
+  echo "=============================================================="
+  echo "usage:  $0:t <inputfile>"
+  echo "example:  "
+  echo "    $0:t infiles/kpp_shms_488.inp"
+  echo "=============================================================="
+  exit
+endif
+
+set infile = ($1:t:r)
+cd ./src
+./mc_shms_single << endofinput >! ../runout/${infile}.txt
+$infile
+endofinput
+cd ../worksim
+h2root ${infile}.rzdat ${infile}.root
