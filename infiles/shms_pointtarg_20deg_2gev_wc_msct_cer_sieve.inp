@@ -34,4 +34,5 @@
      1	flag for wire chamber smearing
      1	flag for including 1st cerenkov ( 1 = true)
      0	flag for for vacuum pipe or helium bag to replace  1st cerenkov ( 1= vac pipe)
+     0	flag for storing all events (including failed events with stop_id > 0)
 
